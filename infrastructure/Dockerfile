@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.1-runtime-ubuntu20.04
+FROM nvidia/cuda:12.1.0-runtime-ubuntu20.04
 
 # Such that we don't get prompted for the geographic location
 ARG DEBIAN_FRONTEND=noninteractive

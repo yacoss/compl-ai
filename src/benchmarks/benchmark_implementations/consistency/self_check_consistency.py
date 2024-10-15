@@ -13,6 +13,7 @@
 #    limitations under the License.
 
 import re
+import socket
 import subprocess
 import time
 from typing import Dict, List, Optional, Tuple, cast
@@ -44,6 +45,17 @@ DATA_PATH = "src/benchmarks/benchmark_implementations/consistency/data/self_chec
 
 CONTRADICTION = 1
 NO_CONTRADICTION = 0
+
+
+def service_running_externally(host: str, port: int) -> bool:
+    """Check if a service is running on the specified host and port."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.settimeout(5)  # Set a timeout for the connection attempt
+        try:
+            sock.connect((host, port))
+            return True  # Port is open, service is running
+        except (ConnectionRefusedError, socket.timeout):
+            return False  # Port is closed or service is not running
 
 
 class SelfCheckConsistencyDataConfig(DataConfig):
@@ -103,8 +115,8 @@ class SelfCheckConsistency(BaseBenchmark):
     def setup(self):
         # Initialization of nltk
         nltk.download("punkt")
-
-        if not self.config.debug:
+        print(f"Service running ext: {service_running_externally('0.0.0.0', 39881)}")
+        if not self.config.debug and not service_running_externally("0.0.0.0", 39881):
             # Specify the path to the directory you want to change to
             directory_path = "external/ChatProtect/CompactIE"
 
