@@ -3,9 +3,6 @@ volumes:
   benchmark_data_volume:
   external_volume:
 
-networks:
-  my_network:
-    driver: bridge
 
 services:
   compact_ie_api:
@@ -29,6 +26,7 @@ services:
     build:
       context: . 
       dockerfile: ./infrastructure/Dockerfile
+    network_mode: host
     stdin_open: true
     tty: true
     command: bash
@@ -45,8 +43,7 @@ services:
     stdin_open: true
     tty: true
     command: bash
-    networks:
-      - my_network
+    network_mode: host
     volumes:
       - ./:/app/
       - ~/.cache/huggingface:/root/.cache/huggingface
